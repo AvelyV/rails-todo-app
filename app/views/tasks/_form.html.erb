@@ -11,25 +11,51 @@
     </div>
   <% end %>
 
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
+  <div class="field form-group">
+    <%= form.text_field :name, placeholder:"Name", class:"form-control" %>
+    <% form.label :name, class:"form-control" %>
   </div>
 
+  <div class="field form-group">
+    <% form.label :comment, class:"form-control" %>
+    <%= form.text_area :comment, placeholder:"Comment", class:"form-control" %>
+  </div>
+  
   <div class="field">
-    <%= form.label :comment %>
-    <%= form.text_area :comment %>
+    <% form.label :category_id%>
+    <% form.select(:category_id, @categories.map{ |b| [b.name, b.id]}) %>
   </div>
 
-  <div class="field">
+
+  <div class="field form-check">
+    <%= form.label :category_id%>
+    <%= form.collection_check_boxes :category_ids, @categories, :id, :name do |c| %>
+    <span>      
+      <%= c.check_box%>       
+      <%= c.label %>
+
+    </span>
+
+
+    <% end %>
+  </div>
+
+
+  <%# <div class="field">
+    <%= form.label :category %>
+    <%# form.check_box_tag "task[category_ids][]", category.id, @task.catgories.include?(category.id) %>
+    <%# category.name %>
+  <!-- </div>  -->
+
+  <div class="field form-group">
     <%= form.label :due %>
     <%= form.date_select :due %>
   </div>
 
-  <div class="field">
+  <!-- <div class="field">
     <%= form.label :done %>
     <%= form.check_box :done, value: false, type: :hidden %>
-  </div>
+  </div> -->
 
   <div class="field form-group">
 
@@ -38,6 +64,6 @@
 
 
   <div class="actions">
-    <%= form.submit %>
+    <%= form.submit class:"btn btn-secondary" %>
   </div>
 <% end %>

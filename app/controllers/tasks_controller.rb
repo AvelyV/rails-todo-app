@@ -1,5 +1,10 @@
 class TasksController < ApplicationController
-  before_action :set_task, only: %i[ show edit update destroy ]
+  before_action :set_task, only: %i[show edit update destroy]
+  before_action :authenticate_user!, except: %i[index show]
+  before_action :correct_user, only: %i[edit update destroy show]
+  before_action :set_category, only: %i[new edit]
+
+  # scope :today, -> {where ()}
 
   # GET /tasks or /tasks.json
   def index
@@ -7,8 +12,7 @@ class TasksController < ApplicationController
   end
 
   # GET /tasks/1 or /tasks/1.json
-  def show
-  end
+  def show; end
 
   # GET /tasks/new
   def new
@@ -16,8 +20,7 @@ class TasksController < ApplicationController
   end
 
   # GET /tasks/1/edit
-  def edit
-  end
+  def edit; end
 
   # POST /tasks or /tasks.json
   def create
@@ -57,13 +60,23 @@ class TasksController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_task
-      @task = Task.find(params[:id])
-    end
 
-    # Only allow a list of trusted parameters through.
-    def task_params
-      params.require(:task).permit(:name, :comment, :due, :done, :user_id)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_task
+    @task = Task.find(params[:id])
+  end
+
+  # Only allow a list of trusted parameters through.
+  def task_params
+    params.require(:task).permit(:name, :comment, :due, :done, :user_id, category_ids: [])
+  end
+
+  def correct_user
+    @task = current_user.tasks.find_by(id: params[:id])
+    redirect_to tasks_path, notice: "Not authorised to view this task" if @task.nil?
+  end
+
+  def set_category
+    @categories = Category.all
+  end
 end
